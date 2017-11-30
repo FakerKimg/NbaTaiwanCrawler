@@ -1,0 +1,51 @@
+<!-- blank.html -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>NBA news</title>
+        <style>
+            body {
+               background-color: lightyellow;
+            }
+            em {
+                color: LightSeaGreen;
+            }
+        </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+    function showlist(){
+        $("body").empty();
+        $.getJSON("/news/", function(data){
+            /*
+            for (var i = 0; i < data.length; i++) {
+                data[i]["datetime"] = new Date(data[i]["datetime"]);
+            }
+            data.sort(function(a, b) {return (a["datetime"] > b["datetime"]) ? 1 : ((a["datetime"] < b["datetime"]) ? -1 : 0)});
+            */
+            var divs = "";
+            for (var i = 0; i < data.length; i++) {
+                divs = divs + "<div name=news index=" + data[i]["href"] + ">" + data[i]["title"]  + "</div>";
+            }
+
+            $("body").append(divs);
+            $("div[name='news']").click(shownews);
+        });
+    }
+    function shownews(){
+        $("body").empty();
+        $.getJSON("/news/"+$(this).attr("index")+"/", function(data){
+            var divs = "<button onclick=showlist()>back to list</button>";
+            divs = divs + "<div>" + data["title"] + "</div>";
+            divs = divs + "<div>" + data["datetime"] + "</div>";
+            divs = divs + data["content"].split("\n").join("<br></br>") + "</div>";
+            $("body").append(divs);
+        });
+    }
+    $(document).ready(showlist());
+    </script>
+    </head>
+    <body>
+    </body>
+</html>
+
